@@ -24,7 +24,7 @@ public class ApiExceptionHandler {
 				result));
 	}
 	
-	@ExceptionHandler(UserNameUniqueException.class)
+	@ExceptionHandler({UserNameUniqueException.class, CpfUniqueVioleationException.class})
 	public ResponseEntity<ErrorMessage> UserNameUniqueException(RuntimeException ex, HttpServletRequest request){
 		
 		return ResponseEntity.status(HttpStatus.CONFLICT).contentType(MediaType.APPLICATION_JSON).body(new ErrorMessage(request,
