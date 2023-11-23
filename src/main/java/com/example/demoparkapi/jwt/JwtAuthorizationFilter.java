@@ -26,18 +26,23 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		final String token = request.getHeader(JwtUtils.JWT_AUTHORIZATION);
-		if (token == null || !token.startsWith(JwtUtils.JWT_BEARER)) {
-			log.info("JWT token esta nulo, vazio ou iniciado com 'Bearer'. ");
-			filterChain.doFilter(request, response);
-			return;
+		log.info("Token JWT recebido: {}", token);
 
+		if (token == null || !token.startsWith(JwtUtils.JWT_BEARER)) {
+		    log.info("JWT token está nulo, vazio ou não iniciado com 'Bearer'.");
+		    filterChain.doFilter(request, response);
+		    return;
 		}
+
 		if (!JwtUtils.isTokenValid(token)) {
-			log.warn("JWT token esta invalido ou expirado");
-			filterChain.doFilter(request, response);
-			return;
+		    log.warn("JWT token está inválido ou expirado");
+		    filterChain.doFilter(request, response);
+		    return;
 		}
+
 		String username = JwtUtils.getUsernameFromToken(token);
+		log.info("Username extraído do token: {}", username);
+
 		toAuthentication(request, username);
 		filterChain.doFilter(request, response);
 	}

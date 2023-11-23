@@ -4,7 +4,6 @@ package com.example.demoparkapi.jwt;
 
 
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -23,12 +22,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtUtils {
 
-	public static final String JWT_BEARER = "Bearer";
+	public static final String JWT_BEARER = "Bearer ";
 	public static final String JWT_AUTHORIZATION = "Authorization";
 	public static final String SECRET_KEY = "0123456789-0987654321-0123456789";
 	public static final long EXPIRE_DAYS = 0;
 	public static final long EXPIRE_HOURS = 0;
-	public static final long EXPIRE_MINUTES = 2;
+	public static final long EXPIRE_MINUTES = 120;
 
 	  private static Logger log = LoggerFactory.getLogger(JwtUtils.class);
 	
@@ -60,6 +59,7 @@ public class JwtUtils {
 		.signWith(genereteKey())
 		.claim("role", role)
 		.compact();
+		log.info("username e role recebidos "+username,role + "method createToken");
 		return new JwtToken(token);
 	}catch (JwtException e) {
 		log.info("Token criado");

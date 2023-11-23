@@ -43,16 +43,18 @@ public class UserService {
 	}
 
 	@Transactional
-	public void alterPassword(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
+	public String alterPassword(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
 		User u = findById(id);
 		
 		if(!passwordEncoder.matches(senhaAtual, u.getPassword())) {
-			new PasswordInvalidException("Senha atual invalida, verifique e tente novamente");
+			throw new PasswordInvalidException("Senha atual invalida, verifique e tente novamente");
 		}
 		if(!novaSenha.equals(confirmaSenha)) {
-			new PasswordInvalidException("Senha de confirmaçao nao confere com a nova senha");
+			throw new PasswordInvalidException("Senha de confirmaçao nao confere com a nova senha");
 		}
 		u.setPassword(passwordEncoder.encode(novaSenha));	
+		return  "Senha alterada com sucesso!";
+		
 	}
 	
 	@Transactional(readOnly = true)
@@ -65,6 +67,7 @@ public class UserService {
 	public User findByName(String username) {
 		return userRepo.findByUsername(username).orElseThrow(()-> new UserNotFoundException(String.format("Usuario com {username} nao encontrado",username)));
 	}
+	
 	@Transactional(readOnly = true)
 	public String findRoleByUsername(String username) {
 		return userRepo.findRoleByName(username);
