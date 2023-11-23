@@ -20,7 +20,7 @@ public class ApiExceptionHandler {
 		
 		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).contentType(MediaType.APPLICATION_JSON).body(new ErrorMessage(request,
 				HttpStatus.UNPROCESSABLE_ENTITY, 
-				"formato de email invalido, por favor insira um email valido",
+				"formato de campo invalido, por favor insira um campo valido",
 				result));
 	}
 	

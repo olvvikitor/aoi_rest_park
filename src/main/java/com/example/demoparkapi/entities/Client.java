@@ -26,6 +26,10 @@ public class Client {
 	@Column(name = "cpf", nullable = false, unique = true, length = 11)
 	private String cpf;
 	
+	@OneToOne
+	@JoinColumn(name= "id_user", nullable = false)
+	private User user;
+	
 	// @CreatedDate é usado para popular automaticamente o campo anotado com a data e hora atuais quando uma entidade é persistida.
 	@CreatedDate
 	@Column(name = "data_criacao")
@@ -47,9 +51,6 @@ public class Client {
 	private String modificadoPor;
 	
 	
-	@OneToOne
-	@JoinColumn(name= "id_user", nullable = false)
-	private User user;
 	
 	
 

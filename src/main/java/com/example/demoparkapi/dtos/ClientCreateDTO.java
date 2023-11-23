@@ -26,6 +26,7 @@ public class ClientCreateDTO {
 	public ClientCreateDTO() {
 		super();
 	}
+	
 
 	public String getName() {
 		return name;
