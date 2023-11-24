@@ -1,5 +1,8 @@
 package com.example.demoparkapi.mapper;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 
 import com.example.demoparkapi.dtos.ClientCreateDTO;
@@ -13,6 +16,9 @@ public class ClientMapper {
 	}
 	public static ClientResponseDTO toDto(Client client) {
 		return new ModelMapper().map(client, ClientResponseDTO.class);
+	}
+	public static List<ClientResponseDTO> toListDto(List<Client> list) {
+		return list.stream().map(x->toDto(x)).collect(Collectors.toList());
 	}
 
 }

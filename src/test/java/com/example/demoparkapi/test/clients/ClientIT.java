@@ -105,4 +105,42 @@ public class ClientIT {
 		
 	}
 
+	@Test
+	public void buscar_cliente_com_dados_validos_retorna_client_status_200() {
+		ClientResponseDTO client=
+				testClient.get().uri("/api/v1/clients/10")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456")) 
+				.exchange().expectStatus().isOk()
+				.expectBody(ClientResponseDTO.class)
+				.returnResult().getResponseBody();
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getName()).isEqualTo("ana Silva");
+		org.assertj.core.api.Assertions.assertThat(client.getCpf()).isEqualTo("92340493064");
+	}
+	@Test
+	public void buscar_cliente_com_dados_invalidos_id_inexistente_retorna_error_status_404() {
+		ErrorMessage client=
+				testClient.get().uri("/api/v1/clients/0")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456")) 
+				.exchange().expectStatus().isNotFound()
+				.expectBody(ErrorMessage.class)
+				.returnResult().getResponseBody();
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getStatus()).isEqualTo(404);
+		
+			}
+	
+	@Test
+	public void buscar_cliente_com_dados_perfil_nao_autorizado_retorna_error_status_403() {
+		ErrorMessage client=
+				testClient.get().uri("/api/v1/clients/10")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@gmail.com", "123456")) 
+				.exchange().expectStatus().isEqualTo(403)
+				.expectBody(ErrorMessage.class)
+				.returnResult().getResponseBody();
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getStatus()).isEqualTo(403);
+		
+	}
+	
 }
