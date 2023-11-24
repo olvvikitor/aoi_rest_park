@@ -1,4 +1,4 @@
-package com.example.demoparkapi.test;
+package com.example.demoparkapi.test.clients;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import com.example.demoparkapi.dtos.ClientCreateDTO;
 import com.example.demoparkapi.dtos.ClientResponseDTO;
 import com.example.demoparkapi.exceptions.ErrorMessage;
+import com.example.demoparkapi.test.jwt.JwtAuthentication;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(scripts = "clients-insert.sql",executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
@@ -44,7 +45,7 @@ public class ClientIT {
 				testClient.post().uri("/api/v1/clients")
 				.contentType(MediaType.APPLICATION_JSON)
 				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "tody@gmail.com", "123456"))
-				.bodyValue(new ClientCreateDTO("tody silva","92340493064"))//cpf da ana
+				.bodyValue(new ClientCreateDTO("tody silva","92340493064"))//cpf da ana. ja existe 
 				.exchange().expectStatus().isEqualTo(409)
 				.expectBody(ErrorMessage.class)
 				.returnResult().getResponseBody();
@@ -56,8 +57,8 @@ public class ClientIT {
 		ErrorMessage client=
 				testClient.post().uri("/api/v1/clients")
 				.contentType(MediaType.APPLICATION_JSON)
-				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456"))
-				.bodyValue(new ClientCreateDTO("Tody silva","82106574029"))//cpf da ana
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456"))//tentanto com perfil de admin
+				.bodyValue(new ClientCreateDTO("Tody silva","82106574029"))
 				.exchange().expectStatus().isForbidden()
 				.expectBody(ErrorMessage.class)
 				.returnResult().getResponseBody();

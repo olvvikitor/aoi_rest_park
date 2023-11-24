@@ -1,4 +1,4 @@
-package com.example.demoparkapi.test;
+package com.example.demoparkapi.test.jwt;
 
 import java.util.function.Consumer;
 

@@ -1,4 +1,4 @@
-package com.example.demoparkapi.test;
+package com.example.demoparkapi.test.jwt;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

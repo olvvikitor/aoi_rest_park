@@ -1,4 +1,4 @@
-package com.example.demoparkapi.test;
+package com.example.demoparkapi.test.users;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ import com.example.demoparkapi.dtos.UserCreateDTO;
 import com.example.demoparkapi.dtos.UserPasswordDTO;
 import com.example.demoparkapi.dtos.UserResponseDto;
 import com.example.demoparkapi.exceptions.ErrorMessage;
+import com.example.demoparkapi.test.jwt.JwtAuthentication;
 
 
 
