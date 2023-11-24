@@ -1,5 +1,7 @@
 package com.example.demoparkapi.test.clients;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,6 +12,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.example.demoparkapi.dtos.ClientCreateDTO;
 import com.example.demoparkapi.dtos.ClientResponseDTO;
+import com.example.demoparkapi.dtos.UserResponseDto;
 import com.example.demoparkapi.exceptions.ErrorMessage;
 import com.example.demoparkapi.test.jwt.JwtAuthentication;
 
@@ -139,8 +142,32 @@ public class ClientIT {
 				.expectBody(ErrorMessage.class)
 				.returnResult().getResponseBody();
 		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
-		org.assertj.core.api.Assertions.assertThat(client.getStatus()).isEqualTo(403);
+		org.assertj.core.api.Assertions.assertThat(client.getStatus()).isEqualTo(403);	
+	}
+
+	@Test
+	public void buscar_todos_clientes_perfil_valido_retorna_lista_clientes_status_200() {
+		List<ClientResponseDTO> user = testClient
+				.get().uri("/api/v1/clients")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456"))
+				.exchange()
+				.expectStatus().isOk()
+				.expectBodyList(ClientResponseDTO.class)
+				.returnResult().getResponseBody();
+		org.assertj.core.api.Assertions.assertThat(user).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(user.get(0).getName()).isEqualTo("ana Silva");
+		org.assertj.core.api.Assertions.assertThat(user.size()).isEqualTo(2);
 		
 	}
-	
+	@Test
+	public void buscar_todos_clientes_perfil_ivalido_retorna_lista_error_status_403() {
+		ErrorMessage client=
+				testClient.get().uri("/api/v1/clients/10")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@gmail.com", "123456")) 
+				.exchange().expectStatus().isEqualTo(403)
+				.expectBody(ErrorMessage.class)
+				.returnResult().getResponseBody();
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getStatus()).isEqualTo(403);	
+	}
 }

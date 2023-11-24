@@ -73,6 +73,11 @@ public class ClientController {
 		return ResponseEntity.status(HttpStatus.OK).body(ClientMapper.toDto(c));
 	}
 	
+	@Operation(summary = "Busca todos os clientes (Apenas admin  pode fazer a busca)", description = "recurso Buscar todos os clientes. "+
+		   "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'. ",
+			responses = {
+					@ApiResponse(responseCode = "403", description = "Recurso não permitido a esse tipo de perfil", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class)))})
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<ClientResponseDTO>> findAll(){
