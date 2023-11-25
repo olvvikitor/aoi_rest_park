@@ -1,11 +1,9 @@
 package com.example.demoparkapi.services;
 
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +11,7 @@ import com.example.demoparkapi.entities.Client;
 import com.example.demoparkapi.exceptions.CpfUniqueVioleationException;
 import com.example.demoparkapi.exceptions.UserNotFoundException;
 import com.example.demoparkapi.repositories.ClientRepository;
+import com.example.demoparkapi.repositories.projection.ClientProjection;
 
 
 @Service
@@ -38,10 +37,8 @@ public class ClientService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<Client>findAll(){
-		List<Client> list = clientRepository.findAll();
-		return list;
-		
-		
+	public Page<ClientProjection>findAll(Pageable pageable){
+		return clientRepository.findAllpage(pageable);
+			
 	}
 }

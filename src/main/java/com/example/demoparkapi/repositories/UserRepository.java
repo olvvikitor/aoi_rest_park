@@ -8,10 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demoparkapi.entities.User;
-import com.example.demoparkapi.enuns.TypesUser;
-
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {

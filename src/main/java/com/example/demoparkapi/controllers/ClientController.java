@@ -1,9 +1,8 @@
 package com.example.demoparkapi.controllers;
 
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,11 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demoparkapi.dtos.ClientCreateDTO;
 import com.example.demoparkapi.dtos.ClientResponseDTO;
+import com.example.demoparkapi.dtos.PageableDto;
 import com.example.demoparkapi.dtos.UserResponseDto;
 import com.example.demoparkapi.entities.Client;
 import com.example.demoparkapi.exceptions.ErrorMessage;
 import com.example.demoparkapi.jwt.JwtUserDatails;
 import com.example.demoparkapi.mapper.ClientMapper;
+import com.example.demoparkapi.mapper.PageableMapper;
+import com.example.demoparkapi.repositories.projection.ClientProjection;
 import com.example.demoparkapi.services.ClientService;
 import com.example.demoparkapi.services.UserService;
 
@@ -80,9 +82,9 @@ public class ClientController {
 					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class)))})
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<ClientResponseDTO>> findAll(){
-		List<Client> list = clientService.findAll();
-		return ResponseEntity.status(HttpStatus.OK).body(ClientMapper.toListDto(list));
+	public ResponseEntity<PageableDto> findAll(Pageable pageable){
+		Page<ClientProjection> list = clientService.findAll(pageable);
+		return ResponseEntity.status(HttpStatus.OK).body(PageableMapper.toDto(list));
 	}
 	
 
