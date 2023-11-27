@@ -12,6 +12,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.example.demoparkapi.dtos.ClientCreateDTO;
 import com.example.demoparkapi.dtos.ClientResponseDTO;
+import com.example.demoparkapi.dtos.PageableDto;
 import com.example.demoparkapi.dtos.UserResponseDto;
 import com.example.demoparkapi.exceptions.ErrorMessage;
 import com.example.demoparkapi.test.jwt.JwtAuthentication;
@@ -136,7 +137,7 @@ public class ClientIT {
 	@Test
 	public void buscar_cliente_com_dados_perfil_nao_autorizado_retorna_error_status_403() {
 		ErrorMessage client=
-				testClient.get().uri("/api/v1/clients/10")
+				testClient.get().uri("/api/v1/clients")
 				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@gmail.com", "123456")) 
 				.exchange().expectStatus().isEqualTo(403)
 				.expectBody(ErrorMessage.class)
@@ -147,24 +148,60 @@ public class ClientIT {
 
 	@Test
 	public void buscar_todos_clientes_perfil_valido_retorna_lista_clientes_status_200() {
-		List<ClientResponseDTO> user = testClient
-				.get().uri("/api/v1/clients")
-				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456"))
+		PageableDto client=
+				testClient.get()
+				.uri("/api/v1/clients")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456")) 
+				.exchange().expectStatus().isOk()
+				.expectBody(PageableDto.class)
+				.returnResult().getResponseBody();
+		
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getContent().size()).isEqualTo(2);	
+		org.assertj.core.api.Assertions.assertThat(client.getNumber()).isEqualTo(0);
+		
+		client=
+				testClient.get().uri("/api/v1/clients?size=1&page=1")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456")) 
 				.exchange()
 				.expectStatus().isOk()
-				.expectBodyList(ClientResponseDTO.class)
+				.expectBody(PageableDto.class)
 				.returnResult().getResponseBody();
-		org.assertj.core.api.Assertions.assertThat(user).isNotNull();
-		org.assertj.core.api.Assertions.assertThat(user.get(0).getName()).isEqualTo("ana Silva");
-		org.assertj.core.api.Assertions.assertThat(user.size()).isEqualTo(2);
+		
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getContent().size()).isEqualTo(1);	
+		org.assertj.core.api.Assertions.assertThat(client.getNumber()).isEqualTo(1);	
 		
 	}
 	@Test
 	public void buscar_todos_clientes_perfil_ivalido_retorna_lista_error_status_403() {
 		ErrorMessage client=
-				testClient.get().uri("/api/v1/clients/10")
+				testClient.get().uri("/api/v1/clients")
 				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@gmail.com", "123456")) 
-				.exchange().expectStatus().isEqualTo(403)
+				.exchange().expectStatus().isForbidden()
+				.expectBody(ErrorMessage.class)
+				.returnResult().getResponseBody();
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getStatus()).isEqualTo(403);	
+	}
+	@Test
+	public void recuperar_dados_cliente_autenticado_retorna_client_status200() {
+		ClientResponseDTO client=
+				testClient.get().uri("/api/v1/clientes/detalhes")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "ana@gmail.com", "123456")) 
+				.exchange().expectStatus().isOk()
+				.expectBody(ClientResponseDTO.class)
+				.returnResult().getResponseBody();
+		org.assertj.core.api.Assertions.assertThat(client).isNotNull();
+		org.assertj.core.api.Assertions.assertThat(client.getName()).isEqualTo("ana Silva");
+		org.assertj.core.api.Assertions.assertThat(client.getCpf()).isEqualTo("92340493064");
+	}
+	@Test
+	public void recuperar_dadoss_cliente_autenticado_admin_retorna_client_status403() {
+		ErrorMessage client=
+				testClient.get().uri("/api/v1/clients/detalhes")
+				.headers(JwtAuthentication.getHeaderAuthorization(testClient, "joao@gmail.com", "123456")) 
+				.exchange().expectStatus().isForbidden()
 				.expectBody(ErrorMessage.class)
 				.returnResult().getResponseBody();
 		org.assertj.core.api.Assertions.assertThat(client).isNotNull();

@@ -41,4 +41,8 @@ public class ClientService {
 		return clientRepository.findAllpage(pageable);
 			
 	}
+	@Transactional(readOnly = true)
+	public Client findMe(Long id) {
+		return clientRepository.findByUserId(id);
+	}
 }

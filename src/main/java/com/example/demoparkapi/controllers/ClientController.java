@@ -3,6 +3,7 @@ package com.example.demoparkapi.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,9 +29,12 @@ import com.example.demoparkapi.services.ClientService;
 import com.example.demoparkapi.services.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -47,6 +51,7 @@ public class ClientController {
 	
 	@Operation(summary = "Criar um novo cliente", description = "recurso para criar um novo cliente vinculdo ao um usuariocadastrado. "+
 	"Requisição exige uso de um bearer token. Acesso restrito a Role='CLIENT'. ",
+	   security = @SecurityRequirement(name = "security"),
 	responses = {
 			@ApiResponse(responseCode = "201", description = "recurso criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
 			@ApiResponse(responseCode = "409", description = "CPF ja existeno sistema", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
@@ -64,6 +69,7 @@ public class ClientController {
 	
 	@Operation(summary = "Busca um cliente por id (Apenas admin  pode fazer a busca)", description = "recurso Buscar um cliente por id. "+
 			"Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'. ",
+			   security = @SecurityRequirement(name = "security"),
 			responses = {
 					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
 					@ApiResponse(responseCode = "403", description = "Recurso não permitido a esse tipo de perfil", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
@@ -77,14 +83,39 @@ public class ClientController {
 	
 	@Operation(summary = "Busca todos os clientes (Apenas admin  pode fazer a busca)", description = "recurso Buscar todos os clientes. "+
 		   "Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'. ",
+		   security = @SecurityRequirement(name = "security"),
+		   parameters = {
+				   @Parameter(in = ParameterIn.QUERY, name="page",
+						   content = @Content(schema = @Schema(type = "integer", defaultValue = "0")),
+						   description = "representa pagina retornada"),
+				   @Parameter(in = ParameterIn.QUERY, name="size",
+				   content = @Content(schema = @Schema(type = "integer", defaultValue = "20")),
+				   description = "representa  o total de elementos na pagina retornada"),
+				   @Parameter(in = ParameterIn.QUERY, name="sort", hidden = true,
+				   content = @Content(schema = @Schema(type = "string", defaultValue = "id,asc")),
+				   description = "representa a ordenação dos resultados na pagina retornada. Aceita multiplos critérios de ordenação"),
+		   },
 			responses = {
 					@ApiResponse(responseCode = "403", description = "Recurso não permitido a esse tipo de perfil", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
 					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class)))})
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<PageableDto> findAll(Pageable pageable){
+	public ResponseEntity<PageableDto> findAll(@Parameter(hidden = true)@PageableDefault(size = 5, sort = {"name"}) Pageable pageable){
 		Page<ClientProjection> list = clientService.findAll(pageable);
 		return ResponseEntity.status(HttpStatus.OK).body(PageableMapper.toDto(list));
+	}
+	
+	@Operation(summary = "Recuperar dados de um cliente atenticado", description = "recurso exige uso de token. restrito a cliente "+
+			"Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'. ",
+			   security = @SecurityRequirement(name = "security"),
+			responses = {
+					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
+					@ApiResponse(responseCode = "403", description = "Recurso não permitido a esse tipo de perfil", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))})
+	@GetMapping("/detalhes")
+	@PreAuthorize("hasRole('CLIENT')")
+	public ResponseEntity<ClientResponseDTO> findMe(@AuthenticationPrincipal JwtUserDatails userDetails){
+	    Client c = clientService.findMe(userDetails.getId());
+	    return ResponseEntity.ok().body(ClientMapper.toDto(c));
 	}
 	
 
