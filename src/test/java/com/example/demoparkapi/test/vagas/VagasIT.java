@@ -58,6 +58,21 @@ public class VagasIT {
 			.jsonPath("method").isEqualTo("POST");
 		}
 		@Test
+		public void criar_vagas_dados_invalidos_perfil_ivalido_retorna_status_403() {	
+			
+			testVagas.post().uri("/api/v1/vagas")
+			.contentType(MediaType.APPLICATION_JSON)
+			.headers(JwtAuthentication.getHeaderAuthorization(testVagas, "ana@gmail.com", "123456"))
+			.bodyValue(new VagaCreateDto ("07-A","LIVRE"))
+			.exchange()
+			.expectStatus().isForbidden()
+			.expectBody()
+			.jsonPath("status").isEqualTo(403)
+			.jsonPath("method").isEqualTo("POST");
+
+		
+		}
+		@Test
 		public void buscar_vagas_com_dados_validos() {	
 			VagaResponseDto vaga = testVagas.get().uri("/api/v1/vagas/01-A")
 			.headers(JwtAuthentication.getHeaderAuthorization(testVagas, "joao@gmail.com", "123456"))
@@ -69,9 +84,8 @@ public class VagasIT {
 			org.assertj.core.api.Assertions.assertThat(vaga.getId()).isEqualTo(1);
 			org.assertj.core.api.Assertions.assertThat(vaga.getCodigo()).isEqualTo("01-A");			
 		}
-		
 		@Test
-		public void criar_vagas_dados_invalidos_perfil_valido_retorna_status_404() {	
+		public void buscar_vagas_dados_inexistentes_perfil_valido_retorna_status_404() {	
 			testVagas.get().uri("/api/v1/vagas/0-A")
 			.headers(JwtAuthentication.getHeaderAuthorization(testVagas, "joao@gmail.com", "123456"))
 			.exchange()
@@ -80,4 +94,15 @@ public class VagasIT {
 			.jsonPath("status").isEqualTo(404)
 			.jsonPath("method").isEqualTo("GET");
 		}
+		@Test
+		public void buscar_vagas_dados_perfil_invalido_retorna_status_403() {	
+			testVagas.get().uri("/api/v1/vagas/0-A")
+			.headers(JwtAuthentication.getHeaderAuthorization(testVagas, "ana@gmail.com", "123456"))
+			.exchange()
+			.expectStatus().isForbidden()
+			.expectBody()
+			.jsonPath("status").isEqualTo(403)
+			.jsonPath("method").isEqualTo("GET");
+		}
+		
 }

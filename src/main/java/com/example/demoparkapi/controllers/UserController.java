@@ -33,7 +33,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @Tag(name = "Usuarios", description = "Contem todas as operaçoes relativas aos recursos para cadastro, edição e leitura de um usuário.")
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("api/v1/users")
 public class UserController {
@@ -45,7 +44,7 @@ public class UserController {
 			@ApiResponse(responseCode = "201", description = "recurso criado com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
 			@ApiResponse(responseCode = "409", description = "Usuario e-mail ja existe", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
 		@ApiResponse(responseCode = "422", description = "Recurso nao processado por entrada de dados invalida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))) })
-	@CrossOrigin
+	@CrossOrigin(origins = "http://localhost:8080")
 	@PostMapping
 	public ResponseEntity<UserResponseDto> createUser(@Valid @RequestBody UserCreateDTO createDto) {
 		User u = userService.createUser(UserMapper.toUser(createDto));

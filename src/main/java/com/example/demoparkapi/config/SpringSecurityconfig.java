@@ -2,6 +2,8 @@ package com.example.demoparkapi.config;
 
 
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,17 +16,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.example.demoparkapi.dtos.UserCreateDTO;
 import com.example.demoparkapi.jwt.JwtAuthenticationEntryPoint;
 import com.example.demoparkapi.jwt.JwtAuthorizationFilter;
 
 @Configuration
 @EnableMethodSecurity
 @EnableWebMvc
-public class SpringSecurityconfig {
+public class SpringSecurityconfig  {
 	private static final String[] DOCUMENTATION_OPENAPI = {
 			"/docs/index.html",
 			"/docs-park.html", "/docs-park/**",
@@ -43,6 +45,7 @@ public class SpringSecurityconfig {
                 .formLogin(t -> t.disable())  // Desativa login via formulário
                 .httpBasic(t -> t.disable())  // Desativa autenticação básica HTTP
                 .authorizeHttpRequests(t -> t
+                		.requestMatchers(  antMatcher(HttpMethod.OPTIONS)).permitAll()  // Permite POST em /api/v1/users sem autenticação
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/users")).permitAll()  // Permite POST em /api/v1/users sem autenticação
                         .requestMatchers(antMatcher(HttpMethod.POST, "/api/v1/auth")).permitAll()   // Permite POST em /api/v1/auth sem autenticação
                         .requestMatchers(DOCUMENTATION_OPENAPI).permitAll()   // Permite POST em /api/v1/auth sem autenticação
@@ -70,4 +73,18 @@ public class SpringSecurityconfig {
     AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+    @Bean
+     WebMvcConfigurer corsConfigure() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:8081") // Adicione o seu frontend como um "allowed origin"
+                        .allowedMethods("GET", "POST", "PUT", "DELETE")
+                        .allowedHeaders("*")
+                        .exposedHeaders("Authorization")
+                        .allowCredentials(true);
+            }
+        };
 }
+    }
