@@ -97,7 +97,7 @@ public class ClientController {
 		   },
 			responses = {
 					@ApiResponse(responseCode = "403", description = "Recurso não permitido a esse tipo de perfil", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
-					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class)))})
+					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ClientResponseDTO.class)))})
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<PageableDto> findAll(@Parameter(hidden = true)@PageableDefault(size = 5, sort = {"name"}) Pageable pageable){
@@ -109,7 +109,7 @@ public class ClientController {
 			"Requisição exige uso de um bearer token. Acesso restrito a Role='ADMIN'. ",
 			   security = @SecurityRequirement(name = "security"),
 			responses = {
-					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
+					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation =ClientResponseDTO.class))),
 					@ApiResponse(responseCode = "403", description = "Recurso não permitido a esse tipo de perfil", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))})
 	@GetMapping("/detalhes")
 	@PreAuthorize("hasRole('CLIENT')")
