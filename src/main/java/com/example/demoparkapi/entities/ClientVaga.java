@@ -26,18 +26,14 @@ import jakarta.persistence.Table;
 @EntityListeners(AuditingEntityListener.class)
 public class ClientVaga implements Serializable{
 	
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	@Column(name = "numero_recibo", nullable = false, unique = true, length = 15)
 	private String recibo;
-	
 	@Column(name = "placa", nullable = false, length = 8)
 	private String placa;
 	@Column(name = "marca", nullable = false, length = 15)
@@ -52,12 +48,13 @@ public class ClientVaga implements Serializable{
 	private LocalDateTime dataSaida;
 	@Column(name = "valor", nullable = true, columnDefinition = "decimal(7,2)")
 	private BigDecimal valor;	
-	@Column(name = "valor", nullable = true, columnDefinition = "decimal(7,2)")
+	@Column(name = "desconto", nullable = true, columnDefinition = "decimal(7,2)")
 	private BigDecimal desconto;
 	
 	@ManyToOne
 	@JoinColumn(name="id_client", nullable = false)
 	private Client cliet;
+	
 	@ManyToOne
 	@JoinColumn(name="id_vaga", nullable = false)
 	private Vaga vagas;
@@ -81,29 +78,6 @@ public class ClientVaga implements Serializable{
 	@LastModifiedBy
 	@Column(name = "modificado_por")
 	private String modificadoPor;
-
-	public ClientVaga(Long id, String recibo, String placa, String marca, String modelo, String cor,
-			LocalDateTime dataEntrada, LocalDateTime dataSaida, BigDecimal valor, BigDecimal desconto, Client cliet,
-			Vaga vagas, LocalDateTime dataCriacao, LocalDateTime dataModificacao, String criadoPor,
-			String modificadoPor) {
-		super();
-		this.id = id;
-		this.recibo = recibo;
-		this.placa = placa;
-		this.marca = marca;
-		this.modelo = modelo;
-		this.cor = cor;
-		this.dataEntrada = dataEntrada;
-		this.dataSaida = dataSaida;
-		this.valor = valor;
-		this.desconto = desconto;
-		this.cliet = cliet;
-		this.vagas = vagas;
-		this.dataCriacao = dataCriacao;
-		this.dataModificacao = dataModificacao;
-		this.criadoPor = criadoPor;
-		this.modificadoPor = modificadoPor;
-	}
 
 	public ClientVaga() {
 		super();

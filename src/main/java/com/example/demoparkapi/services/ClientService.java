@@ -45,4 +45,9 @@ public class ClientService {
 	public Client findMe(Long id) {
 		return clientRepository.findByUserId(id);
 	}
+
+	@Transactional
+	public Client FindByCpf(String cpf) {
+		return clientRepository.findByCpf(cpf).orElseThrow(()->new UserNotFoundException(String.format("CLient com cpf nõ encontrado", cpf)));
+	}
 }

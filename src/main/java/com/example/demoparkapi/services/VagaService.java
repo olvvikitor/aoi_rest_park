@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demoparkapi.entities.Vaga;
+import com.example.demoparkapi.enuns.StatusVaga;
 import com.example.demoparkapi.exceptions.CodigoUniqueVioleationException;
 import com.example.demoparkapi.exceptions.UserNotFoundException;
 import com.example.demoparkapi.repositories.VagaRepositoriy;
@@ -28,5 +29,9 @@ public class VagaService {
 	@Transactional(readOnly = true)
 	public Vaga findByCodigo(String codigo) {
 		return vagarepository.findByCodigo(codigo).orElseThrow(()->new UserNotFoundException(String.format("vaga com codigo {%s} não encontrada", codigo)));
+	}
+
+	public Vaga findByVagaLivre() {
+		return vagarepository.findFirstByStatus(StatusVaga.LIVRE).orElseThrow(()->new UserNotFoundException("Nenhuma vaga foi encontrada"));
 	}
 }

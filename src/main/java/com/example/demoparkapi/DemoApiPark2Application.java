@@ -20,7 +20,7 @@ public class DemoApiPark2Application {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/api/v1/users").allowedOrigins("http://localhost:8081/index");
+				registry.addMapping("/api/v1/users").allowedOrigins("http://localhost:8081/*");
 			}
 		};
 	}

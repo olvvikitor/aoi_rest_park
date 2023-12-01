@@ -1,7 +1,6 @@
 package com.example.demoparkapi.controllers;
 
 import java.net.URI;
-import java.net.http.HttpHeaders;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

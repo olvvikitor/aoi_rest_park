@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demoparkapi.entities.User;
-import com.example.demoparkapi.enuns.TypesUser;
 import com.example.demoparkapi.exceptions.PasswordInvalidException;
 import com.example.demoparkapi.exceptions.UserNameUniqueException;
 import com.example.demoparkapi.exceptions.UserNotFoundException;
