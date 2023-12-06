@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+
+
 public class EstacionamentoCreateeDto {
 	
 	@NotBlank
@@ -26,7 +28,10 @@ public class EstacionamentoCreateeDto {
 	public EstacionamentoCreateeDto() {
 		super();
 	}
-	
+	  public static Builder builder() {
+	        return new EstacionamentoCreateeDto().new Builder();
+	    }
+	  
 	public EstacionamentoCreateeDto(
 			@NotBlank @Size(min = 8, max = 8) @Pattern(regexp = "[A-Z]{3}-[0-9]{4}", message = "A placa do veiculo deve seguir o padrão 'XXX-0000'") String placa,
 			@NotBlank String marca, @NotBlank String modelo, @NotBlank String cor,
@@ -79,6 +84,41 @@ public class EstacionamentoCreateeDto {
 	public void setClientCpf(String clientCpf) {
 		this.clientCpf = clientCpf;
 	}
-	
-	
+	// Inner class para o builder
+    public class Builder {
+
+        private Builder() {
+            // Construtor privado para impedir a criação direta da instância
+        }
+
+        public Builder placa(String placa) {
+            EstacionamentoCreateeDto.this.placa = placa;
+            return this;
+        }
+
+        public Builder marca(String marca) {
+            EstacionamentoCreateeDto.this.marca = marca;
+            return this;
+        }
+
+        public Builder modelo(String modelo) {
+            EstacionamentoCreateeDto.this.modelo = modelo;
+            return this;
+        }
+
+        public Builder cor(String cor) {
+            EstacionamentoCreateeDto.this.cor = cor;
+            return this;
+        }
+
+        public Builder clientCpf(String clientCpf) {
+            EstacionamentoCreateeDto.this.clientCpf = clientCpf;
+            return this;
+        }
+
+        // Método para construir a instância final
+        public EstacionamentoCreateeDto build() {
+            return EstacionamentoCreateeDto.this;
+        }
+    }
 }

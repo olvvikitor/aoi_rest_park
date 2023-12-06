@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demoparkapi.dtos.EstacionamentoResponseDto;
 import com.example.demoparkapi.entities.ClientVaga;
 import com.example.demoparkapi.entities.Vaga;
 import com.example.demoparkapi.enuns.StatusVaga;
@@ -27,8 +28,5 @@ public class EstacionamentoService {
 		clientVaga.setRecibo(EstacionamentoUtils.gerarRecibo());
 		return clientVagaService.create(clientVaga);
 		
-		
-		
 	}
-
 }

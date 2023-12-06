@@ -44,7 +44,7 @@ public class VagaController {
 			security = @SecurityRequirement(name = "security"),
 			responses = {
 					@ApiResponse(responseCode = "201", description = "recurso criado com sucesso",headers = @Header(name = org.springframework.http.HttpHeaders.LOCATION),content = @Content(mediaType = "application/json", schema = @Schema(implementation = UserResponseDto.class))),
-					@ApiResponse(responseCode = "403", description = "Recurso não processado, perfil invalido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VagaResponseDto.class))),
+					@ApiResponse(responseCode = "403", description = "Recurso não processado, perfil invalido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
 					@ApiResponse(responseCode = "409", description = "vaga ja existe no sistema", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
 			     	@ApiResponse(responseCode = "422", description = "Recurso nao processado por entrada de dados invalida", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))})
 	@PostMapping()
@@ -63,7 +63,7 @@ public class VagaController {
 			   security = @SecurityRequirement(name = "security"),
 			responses = {
 					@ApiResponse(responseCode = "200", description = "Busca realizada com sucesso", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VagaResponseDto.class))),
-					@ApiResponse(responseCode = "403", description = "Recurso não processado, perfil invalido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = VagaResponseDto.class))),
+					@ApiResponse(responseCode = "403", description = "Recurso não processado, perfil invalido", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
 			     	@ApiResponse(responseCode = "404", description = "Recurso nao processado, codigo não encontrado", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))})
 	@GetMapping("{codigo}")
 	@PreAuthorize("hasRole('ADMIN')")
